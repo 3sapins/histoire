@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jouons avec l'Histoire</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --parchment: #f4e4c1;
+            --parchment-dark: #e8d4a8;
+            --ink-black: #1a1612;
+            --ink-brown: #3d2b1f;
+            --sepia: #704214;
+            --red-seal: #8b2500;
+            --gold-accent: #c9a227;
+            --shadow: rgba(26, 22, 18, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            background-color: var(--parchment);
+            color: var(--ink-black);
+            line-height: 1.7;
+            min-height: 100vh;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-blend-mode: multiply;
+        }
+
+        /* Decorative border frame */
+        .page-frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            border: 12px solid transparent;
+            border-image: repeating-linear-gradient(
+                45deg,
+                var(--ink-brown) 0,
+                var(--ink-brown) 2px,
+                transparent 2px,
+                transparent 8px
+            ) 12;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 3rem 1rem 2rem;
+            position: relative;
+        }
+
+        header::before {
+            content: "❧";
+            display: block;
+            font-size: 2rem;
+            color: var(--sepia);
+            margin-bottom: 1rem;
+            animation: fadeIn 1s ease-out;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            color: var(--ink-brown);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 0 var(--parchment-dark);
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .subtitle {
+            font-family: 'IM Fell English', serif;
+            font-size: 1.4rem;
+            font-style: italic;
+            color: var(--sepia);
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        /* Decorative divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            height: 2px;
+            width: 100px;
+            background: linear-gradient(90deg, transparent, var(--ink-brown), transparent);
+        }
+
+        .divider-icon {
+            font-size: 1.5rem;
+            color: var(--sepia);
+        }
+
+        /* Introduction */
+        .introduction {
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%);
+            border: 1px solid var(--ink-brown);
+            border-radius: 4px;
+            position: relative;
+            animation: fadeIn 1s ease-out 0.7s both;
+        }
+
+        .introduction::before {
+            content: "L";
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--red-seal);
+            float: left;
+            line-height: 0.8;
+            padding-right: 0.5rem;
+            padding-top: 0.2rem;
+        }
+
+        .introduction p {
+            font-size: 1.15rem;
+            text-align: justify;
+            hyphens: auto;
+            margin-bottom: 1rem;
+        }
+
+        .introduction p:last-child {
+            margin-bottom: 0;
+        }
+
+        .introduction p:first-of-type::first-letter {
+            color: transparent;
+        }
+
+        /* Games grid */
+        .games-section h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            text-align: center;
+            color: var(--ink-brown);
+            margin-bottom: 2rem;
+            letter-spacing: 0.1em;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 1rem 0;
+        }
+
+        /* Game cards */
+        .game-card {
+            background: linear-gradient(145deg, #faf6eb 0%, var(--parchment) 50%, var(--parchment-dark) 100%);
+            border: 2px solid var(--ink-brown);
+            border-radius: 4px;
+            padding: 1.5rem;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: cardAppear 0.6s ease-out both;
+            overflow: hidden;
+        }
+
+        .game-card::before {
+            content: "";
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 1px solid var(--sepia);
+            border-radius: 2px;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .game-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 60px;
+            background: var(--red-seal);
+            clip-path: polygon(0 0, 100% 0, 0 100%);
+            opacity: 0.9;
+        }
+
+        .game-card:nth-child(1) { animation-delay: 0.1s; }
+        .game-card:nth-child(2) { animation-delay: 0.2s; }
+        .game-card:nth-child(3) { animation-delay: 0.3s; }
+        .game-card:nth-child(4) { animation-delay: 0.4s; }
+        .game-card:nth-child(5) { animation-delay: 0.5s; }
+        .game-card:nth-child(6) { animation-delay: 0.6s; }
+        .game-card:nth-child(7) { animation-delay: 0.7s; }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px var(--shadow), 0 5px 15px var(--shadow);
+        }
+
+        .card-period {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            color: #faf6eb;
+            z-index: 1;
+            font-weight: 600;
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink-brown);
+            margin-bottom: 0.75rem;
+            padding-top: 1.5rem;
+            border-bottom: 2px solid var(--gold-accent);
+            padding-bottom: 0.5rem;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: var(--ink-black);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .card-objectives {
+            margin-bottom: 1.5rem;
+        }
+
+        .card-objectives h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            color: var(--sepia);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .card-objectives ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .card-objectives li {
+            position: relative;
+            padding-left: 1.2rem;
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
+        }
+
+        .card-objectives li::before {
+            content: "‣";
+            position: absolute;
+            left: 0;
+            color: var(--red-seal);
+            font-weight: bold;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-tag {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            background: var(--ink-brown);
+            color: var(--parchment);
+            padding: 0.2rem 0.5rem;
+            border-radius: 2px;
+            letter-spacing: 0.03em;
+        }
+
+        .card-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--ink-brown);
+            color: var(--parchment);
+            padding: 0.75rem 1.5rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+        }
+
+        .card-button:hover {
+            background: var(--red-seal);
+            transform: scale(1.02);
+        }
+
+        .card-button::after {
+            content: "→";
+            transition: transform 0.3s ease;
+        }
+
+        .card-button:hover::after {
+            transform: translateX(4px);
+        }
+
+        .card-meta {
+            font-size: 0.85rem;
+            color: var(--sepia);
+            margin-top: 0.75rem;
+            font-style: italic;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--ink-brown);
+        }
+
+        footer p {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            color: var(--sepia);
+        }
+
+        footer .school {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+            color: var(--ink-brown);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .introduction {
+                padding: 1.5rem;
+            }
+
+            .page-frame {
+                border-width: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-frame"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Jouons avec l'Histoire</h1>
+            <p class="subtitle">Apprendre en s'amusant, comprendre en jouant</p>
+        </header>
+
+        <div class="divider">
+            <span class="divider-icon">☙</span>
+        </div>
+
+        <section class="introduction">
+            <p>'apprentissage de l'histoire ne se limite pas à la mémorisation de dates et d'événements. C'est avant tout la compréhension des mécanismes, des choix humains et de leurs conséquences. Le jeu, par sa nature immersive, permet aux élèves de se glisser dans la peau des acteurs du passé, de prendre des décisions et d'en mesurer les effets.</p>
+            <p>Ces jeux pédagogiques ont été conçus pour accompagner les cours d'histoire au secondaire. Chacun d'entre eux plonge l'élève dans une époque précise, avec ses enjeux, ses tensions et ses possibles. En jouant, on questionne les sources, on confronte les points de vue, on construit sa propre compréhension du passé.</p>
+        </section>
+
+        <section class="games-section">
+            <h2>❧ Les Jeux Disponibles ❧</h2>
+            
+            <div class="games-grid">
+                <article class="game-card">
+                    <span class="card-period">XI<sup>e</sup> s.</span>
+                    <h3 class="card-title">Seigneur de Valombre</h3>
+                    <p class="card-description">Une simulation féodale interactive où vous héritez d'un petit fief et devez gérer vos relations avec votre suzerain, vos vassaux et vos paysans.</p>
+                    <div class="card-tags">
+                        <span class="card-tag">Simulation</span>
+                        <span class="card-tag">Féodalité</span>
+                        <span class="card-tag">Moyen Âge</span>
+                    </div>
+                    <div class="card-objectives">
+                        <h4>Objectifs</h4>
+                        <ul>
+                            <li>Comprendre la réciprocité des liens féodaux</li>
+                            <li>Distinguer les trois ordres de la société</li>
+                            <li>Saisir le fonctionnement d'une seigneurie</li>
+                        </ul>
+                    </div>
+                    <a href="https://3sapins.github.io/valombre/" class="card-button" target="_blank">Jouer</a>
+                    <p class="card-meta">⏱ 1 période de 45 min</p>
+                </article>
+
+                <article class="game-card">
+                    <span class="card-period">1095</span>
+                    <h3 class="card-title">Les Croisades</h3>
+                    <p class="card-description">Plongez dans la Première Croisade à travers les yeux d'un chevalier franc et d'un marchand de Damas. Trois épisodes : Partir, Marcher, Durer.</p>
+                    <div class="card-tags">
+                        <span class="card-tag">Double perspective</span>
+                        <span class="card-tag">Critique des sources</span>
+                    </div>
+                    <div class="card-objectives">
+                        <h4>Objectifs</h4>
+                        <ul>
+                            <li>Confronter les points de vue chrétien et musulman</li>
+                            <li>Analyser les motivations des croisés</li>
+                            <li>Comprendre la fragilité des États latins</li>
+                        </ul>
+                    </div>
+                    <a href="https://3sapins.github.io/croisades/" class="card-button" target="_blank">Jouer</a>
+                    <p class="card-meta">⏱ 2-3 périodes de 45 min</p>
+                </article>
+
+                <article class="game-card">
+                    <span class="card-period">1517</span>
+                    <h3 class="card-title">Réformateurs en Action</h3>
+                    <p class="card-description">Incarnez Luther, Zwingli et Viret. Vivez les dilemmes moraux et politiques de la Réforme protestante à travers leurs choix décisifs.</p>
+                    <div class="card-tags">
+                        <span class="card-tag">Histoire suisse</span>
+                        <span class="card-tag">Réforme</span>
+                        <span class="card-tag">Aventure dont vous êtes le héros</span>
+                    </div>
+                    <div class="card-objectives">
+                        <h4>Objectifs</h4>
+                        <ul>
+                            <li>Comprendre les causes de la Réforme</li>
+                            <li>Découvrir les réformateurs suisses</li>
+                            <li>Mesurer les tensions religieuses du XVI<sup>e</sup> siècle</li>
+                        </ul>
+                    </div>
+                    <a href="https://3sapins.github.io/reforme/" class="card-button" target="_blank">Jouer</a>
+                    <a href="Fiche_Reformateurs.docx" class="card-button" style="background: var(--sepia); margin-left: 0.5rem;" download>📄 Fiche</a>
+                    <p class="card-meta">⏱ 1-2 périodes de 45 min</p>
+                </article>
+
+                <article class="game-card">
+                    <span class="card-period">1494</span>
+                    <h3 class="card-title">Florence 1494</h3>
+                    <p class="card-description">L'Éveil de l'Humanisme. Créez votre personnage et explorez la Florence de la Renaissance, déchirée entre les Médicis, Savonarole et les humanistes.</p>
+                    <div class="card-tags">
+                        <span class="card-tag">20 cartes à collecter</span>
+                        <span class="card-tag">Aventure dont vous êtes le héros</span>
+                    </div>
+                    <div class="card-objectives">
+                        <h4>Objectifs</h4>
+                        <ul>
+                            <li>Découvrir l'humanisme et ses valeurs</li>
+                            <li>Explorer les ateliers, palais et couvents</li>
+                            <li>Comprendre les tensions politiques florentines</li>
+                        </ul>
+                    </div>
+                    <a href="https://3sapins.github.io/renaissance/" class="card-button" target="_blank">Jouer</a>
+                    <p class="card-meta">⏱ 1-2 périodes de 45 min</p>
+                </article>
+
+                <article class="game-card">
+                    <span class="card-period">1519</span>
+                    <h3 class="card-title">La Conquête du Mexique</h3>
+                    <p class="card-description">Suivez Cortés de Cuba à Tenochtitlan ou incarnez Moctezuma II face à l'arrivée des Espagnols. Deux parcours pour comprendre cette conquête tragique.</p>
+                    <div class="card-tags">
+                        <span class="card-tag">Parcours Cortés</span>
+                        <span class="card-tag">Parcours Moctezuma</span>
+                        <span class="card-tag">2 niveaux</span>
+                    </div>
+                    <div class="card-objectives">
+                        <h4>Objectifs</h4>
+                        <ul>
+                            <li>Comprendre les stratégies de la conquête</li>
+                            <li>Découvrir la civilisation aztèque</li>
+                            <li>Analyser les causes de l'effondrement</li>
+                        </ul>
+                    </div>
+                    <a href="https://3sapins.github.io/conquistador/" class="card-button" target="_blank">Jouer</a>
+                    <a href="Fiche_Cortes.docx" class="card-button" style="background: var(--sepia); margin-left: 0.5rem;" download>📄 Cortés</a>
+                    <a href="Fiche_Moctezuma.docx" class="card-button" style="background: var(--sepia); margin-left: 0.5rem;" download>📄 Moctezuma</a>
+                    <p class="card-meta">⏱ 1 période de 45 min</p>
+                </article>
+
+                <article class="game-card">
+                    <span class="card-period">1789</span>
+                    <h3 class="card-title">J'ai vécu la Révolution</h3>
+                    <p class="card-description">Créez votre personnage et traversez 32 ans d'histoire tumultueuse : la chute de la monarchie, la Terreur, l'ascension de Napoléon, jusqu'à Waterloo.</p>
+                    <div class="card-tags">
+                        <span class="card-tag">Aventure dont vous êtes le héros</span>
+                        <span class="card-tag">Profil politique</span>
+                        <span class="card-tag">Révolution française</span>
+                    </div>
+                    <div class="card-objectives">
+                        <h4>Objectifs</h4>
+                        <ul>
+                            <li>Comprendre les causes de la Révolution</li>
+                            <li>Vivre les grands événements de 1789 à 1815</li>
+                            <li>Découvrir son profil politique</li>
+                        </ul>
+                    </div>
+                    <a href="https://3sapins.github.io/revolution/" class="card-button" target="_blank">Jouer</a>
+                    <p class="card-meta">⏱ 2-3 périodes de 45 min</p>
+                </article>
+
+                <article class="game-card">
+                    <span class="card-period">1840</span>
+                    <h3 class="card-title">Les Forges du Progrès</h3>
+                    <p class="card-description">Simulation multijoueur du capitalisme industriel. Gérez votre usine, recrutez des ouvriers, investissez dans les machines et survivez aux crises économiques.</p>
+                    <div class="card-tags">
+                        <span class="card-tag">Multijoueur</span>
+                        <span class="card-tag">2-30 joueurs</span>
+                        <span class="card-tag">Simulation économique</span>
+                    </div>
+                    <div class="card-objectives">
+                        <h4>Objectifs</h4>
+                        <ul>
+                            <li>Comprendre l'offre, la demande et les prix</li>
+                            <li>Découvrir la condition ouvrière</li>
+                            <li>Expérimenter les crises du capitalisme</li>
+                        </ul>
+                    </div>
+                    <a href="https://3sapins.github.io/forge/" class="card-button" target="_blank">Jouer</a>
+                    <p class="card-meta">👥 Partie en classe avec code • ⏱ 2-3 périodes</p>
+                </article>
+            </div>
+        </section>
+
+        <footer>
+            <p>« L'histoire est un roman qui a été, le roman est de l'histoire qui aurait pu être. »</p>
+            <p class="school">Collège des Trois-Sapins — Echallens</p>
+        </footer>
+    </div>
+</body>
+</html>
